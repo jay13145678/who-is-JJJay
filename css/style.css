@@ -274,6 +274,157 @@ body::before {
 }
 
 /* ========================================
+   WORKS SECTION
+   ======================================== */
+.works {
+  padding: 2rem 1.5rem;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.works-spotlight {
+  border: 2px solid var(--cobalt);
+  background: #F0ECE6;
+  padding: 1.5rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.spotlight-marker {
+  display: inline-block;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  color: #F5F0EB;
+  background: var(--cobalt);
+  padding: 0.2rem 0.6rem;
+  margin-bottom: 0.8rem;
+}
+
+.spotlight-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  margin-bottom: 0.4rem;
+}
+
+.spotlight-desc {
+  font-size: 0.9rem;
+  color: #5A5A5A;
+  line-height: 1.7;
+  max-width: 600px;
+  margin-bottom: 0.8rem;
+}
+
+.spotlight-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.works-tag {
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border: 1.5px solid #2C2C2C;
+  background: #F5F0EB;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+}
+
+.works-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.works-card {
+  border: 2px solid #2C2C2C;
+  padding: 1.2rem;
+  background: #F0ECE6;
+  transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+
+.works-card:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 4px 4px 0 var(--cobalt);
+  border-color: var(--cobalt);
+}
+
+.works-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.works-card-number {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: #8B8B8B;
+}
+
+.works-card-status {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border: 1.5px solid #2C2C2C;
+  background: #F5F0EB;
+}
+
+.works-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+  letter-spacing: 0.02em;
+  font-family: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.works-card-desc {
+  font-size: 0.85rem;
+  color: #5A5A5A;
+  line-height: 1.6;
+  margin-bottom: 0.6rem;
+}
+
+.works-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+}
+
+@media (min-width: 640px) {
+  .works {
+    padding: 2.5rem 2rem;
+  }
+
+  .works-spotlight {
+    padding: 2rem;
+  }
+
+  .spotlight-title {
+    font-size: 1.5rem;
+  }
+
+  .works-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+  }
+
+  .works-card {
+    padding: 1.5rem;
+  }
+}
+
+@media (min-width: 960px) {
+  .works {
+    padding: 3rem 2rem;
+  }
+}
+
+/* ========================================
    CHAT SECTION
    ======================================== */
 .chat {
@@ -616,6 +767,7 @@ body::before {
    ======================================== */
 .hero,
 .about,
+.works,
 .chat {
   opacity: 0;
   transform: translateY(20px);
@@ -623,7 +775,8 @@ body::before {
 }
 
 .about { animation-delay: 0.15s; }
-.chat  { animation-delay: 0.3s; }
+.chat  { animation-delay: 0.25s; }
+.works { animation-delay: 0.35s; }
 
 @keyframes fadeUp {
   to {
