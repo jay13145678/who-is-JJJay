@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>jjjay · 个人主页</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ========== HERO ========== -->
+  <header class="hero" id="hero">
+    <div class="hero-grid">
+      <div class="hero-avatar">
+        <img src="assets/avatar.jpg" alt="jjjay avatar">
+      </div>
+      <div class="hero-text">
+        <h1 class="hero-name">jjjay</h1>
+        <p class="hero-tagline">一个在用 AI 做产品的计科生，正把想法变成现实</p>
+        <div class="hero-line"></div>
+        <div class="hero-badge">
+          <span class="badge-dot"></span>
+          计科 · AI 产品向
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========== ABOUT ========== -->
+  <section class="about" id="about">
+    <div class="section-label">ABOUT</div>
+    <p class="about-intro">一个正在探索 AI 产品可能的计科学生 —— 相信工具能够降低门槛，执着能把想法变成现实。</p>
+    <div class="about-grid">
+      <div class="about-card card-wide" data-question="你正在做什么？">
+        <span class="card-number">01</span>
+        <h3>正在做</h3>
+        <p>进行学习 AI 工具的使用</p>
+      </div>
+      <div class="about-card" data-question="你的兴趣是什么？">
+        <span class="card-number">02</span>
+        <h3>兴趣</h3>
+        <p>对 AI 进行产品使用，将自己的想法分享出去</p>
+      </div>
+      <div class="about-card" data-question="你有什么特点？">
+        <span class="card-number">03</span>
+        <h3>特点</h3>
+        <p>执着</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== CHAT ========== -->
+  <section class="chat" id="chat">
+    <div class="section-label">DIGITAL TWIN</div>
+    <div class="chat-container">
+      <div class="chat-header">
+        <div class="chat-dot" id="statusDot"></div>
+        <span>数字分身 · jjjay</span>
+        <span class="chat-status" id="chatStatus">检测中…</span>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div class="msg msg-bot">
+          <div class="msg-avatar">J</div>
+          <div class="msg-bubble">
+            你好！我是 jjjay 的数字分身，关于他的一切都可以问我。<br>
+            比如：<em>"你在做什么？"</em> 或 <em>"你为什么想做这些？"</em>
+          </div>
+        </div>
+      </div>
+      <div class="chat-suggestions">
+        <button class="suggestion" data-text="你在做什么？">你在做什么？</button>
+        <button class="suggestion" data-text="你的兴趣是什么？">你的兴趣是什么？</button>
+        <button class="suggestion" data-text="你有什么特点？">你有什么特点？</button>
+      </div>
+      <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="输入你想问的问题…" autocomplete="off">
+        <button id="chatSend">发送</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========== FOOTER ========== -->
+  <footer class="footer">
+    <div class="footer-line"></div>
+    <div class="footer-social">
+      <a href="https://github.com/jay13145678" class="social-link" target="_blank" aria-label="GitHub">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+        </svg>
+      </a>
+      <a href="mailto:jay13145678@example.com" class="social-link" target="_blank" aria-label="Email">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="16" rx="2"/>
+          <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+        </svg>
+      </a>
+    </div>
+    <p>&copy; 2026 jjjay · Built with Bauhaus</p>
+  </footer>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
