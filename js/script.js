@@ -51,11 +51,13 @@ function getFallback() {
   return f[Math.floor(Math.random() * f.length)];
 }
 
-// ---------- 调用后端 API ----------
+// ---------- API 地址配置 ----------
+const API_BASE = window.API_URL || '';
+
 let messageHistory = [];
 
 async function callAPI(message) {
-  const res = await fetch('/api/chat', {
+  const res = await fetch(API_BASE + '/api/chat', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ message, history: messageHistory }),
@@ -158,7 +160,7 @@ const chatStatus = document.getElementById('chatStatus');
 
 (async function checkBackend() {
   try {
-    const res = await fetch('/api/health', { signal: AbortSignal.timeout(3000) });
+    const res = await fetch(API_BASE + '/api/health', { signal: AbortSignal.timeout(3000) });
     const data = await res.json();
     if (data.api) {
       chatStatus.textContent = '已连接';
