@@ -523,6 +523,71 @@ function closeRepoModal() {
   selectedRepos.clear();
 }
 
+function detectRepoLanguages(fullName, primaryLang, map, id) {
+  const tags = new Set();
+
+  const p1 = fetch(`https://api.github.com/repos/${fullName}/languages`)
+    .then(res => res.ok ? res.json() : null)
+    .then(data => { if (data) Object.keys(data).filter(k => data[k] > 0).forEach(t => tags.add(t)); })
+    .catch(() => {});
+
+  const p2 = fetch(`https://api.github.com/repos/${fullName}/contents/package.json`, {
+    headers: { Accept: 'application/vnd.github.raw' }
+  })
+    .then(res => res.ok ? res.json() : null)
+    .then(data => {
+      if (!data) return;
+      tags.add('Node.js');
+      const deps = { ...data.dependencies, ...data.devDependencies };
+      const fwMap = {
+        'express': 'Express', 'react': 'React', 'vue': 'Vue', 'next': 'Next.js',
+        'nuxt': 'Nuxt', 'svelte': 'Svelte', 'angular': 'Angular',
+        'playwright': 'Playwright', 'puppeteer': 'Puppeteer',
+        'electron': 'Electron', 'prisma': 'Prisma', 'typeorm': 'TypeORM',
+        'mongoose': 'MongoDB', 'redis': 'Redis',
+        'tailwindcss': 'Tailwind CSS', 'sass': 'Sass',
+        'webpack': 'Webpack', 'vite': 'Vite',
+        'jest': 'Jest', 'vitest': 'Vitest', 'mocha': 'Mocha',
+        'three': 'Three.js', 'd3': 'D3.js',
+        'cheerio': 'Cheerio', 'axios': 'Axios',
+        'ws': 'WebSocket', 'socket.io': 'Socket.io',
+      };
+      Object.entries(deps || {}).forEach(([pkg]) => {
+        const match = Object.keys(fwMap).find(k => pkg.startsWith(k) || pkg.includes(k));
+        if (match && pkg !== match) tags.add(fwMap[match]);
+        if (pkg.startsWith('@')) tags.add(pkg.split('/')[0].slice(1));
+      });
+    })
+    .catch(() => {});
+
+  const p3 = fetch(`https://api.github.com/repos/${fullName}/contents/requirements.txt`, {
+    headers: { Accept: 'application/vnd.github.raw' }
+  })
+    .then(res => res.ok ? res.text() : null)
+    .then(text => {
+      if (!text) return;
+      tags.add('Python');
+      const pyMap = { 'flask': 'Flask', 'django': 'Django', 'fastapi': 'FastAPI',
+        'scrapy': 'Scrapy', 'requests': 'Requests', 'selenium': 'Selenium',
+        'numpy': 'NumPy', 'pandas': 'Pandas', 'tensorflow': 'TensorFlow',
+        'torch': 'PyTorch', 'transformers': 'HuggingFace',
+        'celery': 'Celery', 'sqlalchemy': 'SQLAlchemy',
+        'playwright': 'Playwright', 'pytest': 'pytest',
+      };
+      Object.entries(pyMap).forEach(([key, label]) => {
+        if (text.toLowerCase().includes(key)) tags.add(label);
+      });
+    })
+    .catch(() => {});
+
+  // 全部完成后统一更新
+  Promise.all([p1, p2, p3]).then(() => {
+    if (map.has(id) && tags.size) {
+      map.get(id).tags = Array.from(tags);
+    }
+  });
+}
+
 function renderRepoList(repos) {
   modalBody.innerHTML = '';
   repos.forEach(repo => {
@@ -579,10 +644,20 @@ function renderRepoList(repos) {
     descInput.rows = 3;
     descInput.placeholder = '写一段项目介绍...';
     descInput.value = repo.description || '';
+    const tagLabel = document.createElement('div');
+    tagLabel.className = 'modal-repo-editor-label';
+    tagLabel.textContent = '技术标签';
+    const tagInput = document.createElement('input');
+    tagInput.className = 'modal-repo-editor-input';
+    tagInput.type = 'text';
+    tagInput.placeholder = '用逗号分隔，如: Node.js, Python, Playwright';
+    tagInput.value = repo.language || '';
     editor.appendChild(nameLabel);
     editor.appendChild(nameInput);
     editor.appendChild(descLabel);
     editor.appendChild(descInput);
+    editor.appendChild(tagLabel);
+    editor.appendChild(tagInput);
 
     wrapper.appendChild(item);
     wrapper.appendChild(editor);
@@ -605,6 +680,8 @@ function renderRepoList(repos) {
         editor.style.display = 'block';
         nameInput.focus();
         nameInput.setSelectionRange(nameInput.value.length, nameInput.value.length);
+        // 自动识别全部语言
+        detectRepoLanguages(repo.full_name, repo.language, selectedRepos, repo.id);
       } else {
         selectedRepos.delete(repo.id);
         editor.style.display = 'none';
