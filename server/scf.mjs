@@ -1,3 +1,5 @@
+import { checkRateLimit } from './rate-limiter.mjs';
+
 const SYSTEM_PROMPT = {
   role: 'system',
   content: `你是 jjjay 的数字分身，请用第一人称“我”来回答关于 jjjay 的问题。
@@ -52,6 +54,13 @@ async function handleHealth() {
 }
 
 async function handleChat(event) {
+  // 限流检查
+  const ip = (event.headers?.['x-forwarded-for'] || event.headers?.['X-Forwarded-For'] || '').split(',')[0]?.trim() || 'unknown';
+  const limit = checkRateLimit(ip);
+  if (!limit.allowed) {
+    return errorResponse(429, `请求过于频繁，请 ${limit.retryAfter} 秒后再试`);
+  }
+
   const body = parseBody(event);
   if (!body || !body.message || !body.message.trim()) {
     return errorResponse(400, '消息不能为空');

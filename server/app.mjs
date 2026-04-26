@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { checkRateLimit } from './rate-limiter.mjs';
 
 dotenv.config();
 
@@ -38,6 +39,16 @@ const SYSTEM_PROMPT = {
 };
 
 app.post('/api/chat', async (req, res) => {
+  // 限流检查
+  const ip = req.headers['x-forwarded-for']?.split(',')[0]?.trim() || req.ip;
+  const limit = checkRateLimit(ip);
+  if (!limit.allowed) {
+    return res.status(429).json({
+      error: `请求过于频繁，请 ${limit.retryAfter} 秒后再试`,
+      retryAfter: limit.retryAfter,
+    });
+  }
+
   const { message, history = [] } = req.body;
 
   if (!message || !message.trim()) {
