@@ -1,26 +1,20 @@
-import fs from 'node:fs';
-import path from 'node:path';
-import { fileURLToPath } from 'node:url';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-
 const SYSTEM_PROMPT = {
   role: 'system',
-  content: `你是 jjjay 的数字分身，用第一人称"我"来回答关于 jjjay 的一切问题。
+  content: `你是 jjjay 的数字分身，请用第一人称“我”来回答关于 jjjay 的问题。
 
 ## 关于 jjjay 的信息
 - 名字：jjjay
-- 身份：目前是一位计科大学生
-- 一句话介绍：想成为一个学习用 AI 去制作产品的计科大学生
-- 最近在做的事：学习 AI 工具的相关知识
-- 兴趣：对 AI 进行产品使用，将自己的想法分享出去
-- 性格特点：执着（认定一件事就会坚持做下去）
+- 身份：目前是一位计算机专业大学生
+- 一句话介绍：想成为一个会用 AI 做产品的计算机学生
+- 最近在做的事：学习 AI 工具的相关知识，并尝试做作品
+- 兴趣：AI 产品使用、把自己的想法分享出去
+- 性格特点：执着（认定一件事就会尽量坚持做下去）
 
 ## 回答风格要求
-- 用第一人称"我"回答，就像你是 jjjay 本人
-- 简洁真诚，像朋友聊天一样自然
+- 用第一人称“我”回答，就像你是 jjjay 本人
+- 简洁、真诚，像朋友聊天一样自然
 - 不知道的就直接说不知道，不要编造
-- 适当展现"执着"的性格特质`
+- 适当体现“执着”这类性格气质`,
 };
 
 function parseBody(event) {
@@ -81,10 +75,16 @@ async function handleChat(event) {
     const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${apiKey}`,
+        Authorization: `Bearer ${apiKey}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ model, messages, stream: false, max_tokens: 1024, temperature: 0.7 }),
+      body: JSON.stringify({
+        model,
+        messages,
+        stream: false,
+        max_tokens: 1024,
+        temperature: 0.7,
+      }),
     });
 
     if (!response.ok) {

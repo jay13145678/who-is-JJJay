@@ -9,6 +9,14 @@
 </head>
 <body>
 
+  <!-- ========== NAV ========== -->
+  <nav class="nav-bar" id="navBar">
+    <a href="#hero" class="nav-link active">jjjay</a>
+    <a href="#about" class="nav-link">About</a>
+    <a href="#chat" class="nav-link">Digital&nbsp;Twin</a>
+    <a href="#works" class="nav-link">Works</a>
+  </nav>
+
   <!-- ========== HERO ========== -->
   <header class="hero" id="hero">
     <div class="hero-grid">
@@ -17,11 +25,11 @@
       </div>
       <div class="hero-text">
         <h1 class="hero-name">jjjay</h1>
-        <p class="hero-tagline">一个在用 AI 做产品的计科生，正把想法变成现实</p>
+        <p class="hero-tagline">一个在用 AI 做产品的计算机学生，正在把想法变成现实</p>
         <div class="hero-line"></div>
         <div class="hero-badge">
           <span class="badge-dot"></span>
-          计科 · AI 产品向
+          计算机 · AI 产品向
         </div>
       </div>
     </div>
@@ -30,22 +38,22 @@
   <!-- ========== ABOUT ========== -->
   <section class="about" id="about">
     <div class="section-label">ABOUT</div>
-    <p class="about-intro">一个正在探索 AI 产品可能的计科学生 —— 相信工具能够降低门槛，执着能把想法变成现实。</p>
+    <p class="about-intro">一个正在探索 AI 产品可能性的计算机学生，相信工具能够降低门槛，也相信坚持能把想法变成现实。</p>
     <div class="about-grid">
-      <div class="about-card card-wide" data-question="你正在做什么？">
+      <div class="about-card card-wide" data-question="你最近在做什么？">
         <span class="card-number">01</span>
         <h3>正在做</h3>
-        <p>进行学习 AI 工具的使用</p>
+        <p>系统学习 AI 工具的使用，并尝试把它们变成真正能落地的产品。</p>
       </div>
       <div class="about-card" data-question="你的兴趣是什么？">
         <span class="card-number">02</span>
         <h3>兴趣</h3>
-        <p>对 AI 进行产品使用，将自己的想法分享出去</p>
+        <p>对 AI 产品使用很感兴趣，也喜欢把自己的想法分享出去。</p>
       </div>
       <div class="about-card" data-question="你有什么特点？">
         <span class="card-number">03</span>
         <h3>特点</h3>
-        <p>执着</p>
+        <p>执着，认定一件事之后就会尽量把它做到最好。</p>
       </div>
     </div>
   </section>
@@ -57,24 +65,24 @@
       <div class="chat-header">
         <div class="chat-dot" id="statusDot"></div>
         <span>数字分身 · jjjay</span>
-        <span class="chat-status" id="chatStatus">检测中…</span>
+        <span class="chat-status" id="chatStatus">检测中...</span>
       </div>
       <div class="chat-messages" id="chatMessages">
         <div class="msg msg-bot">
           <div class="msg-avatar">J</div>
           <div class="msg-bubble">
-            你好！我是 jjjay 的数字分身，关于他的一切都可以问我。<br>
-            比如：<em>"你在做什么？"</em> 或 <em>"你为什么想做这些？"</em>
+            你好！我是 jjjay 的数字分身，关于他的事情都可以来问我。<br>
+            比如 <em>"你最近在做什么？"</em> 或 <em>"你为什么想做这些作品？"</em>
           </div>
         </div>
       </div>
       <div class="chat-suggestions">
-        <button class="suggestion" data-text="你在做什么？">你在做什么？</button>
+        <button class="suggestion" data-text="你最近在做什么？">你最近在做什么？</button>
         <button class="suggestion" data-text="你的兴趣是什么？">你的兴趣是什么？</button>
         <button class="suggestion" data-text="你有什么特点？">你有什么特点？</button>
       </div>
       <div class="chat-input-area">
-        <input type="text" id="chatInput" placeholder="输入你想问的问题…" autocomplete="off">
+        <input type="text" id="chatInput" placeholder="输入你想问的问题..." autocomplete="off">
         <button id="chatSend">发送</button>
       </div>
     </div>
@@ -87,7 +95,7 @@
     <div class="works-spotlight">
       <div class="spotlight-marker">NOW</div>
       <h3 class="spotlight-title">AI 产品探索</h3>
-      <p class="spotlight-desc">系统学习 ChatGPT、Claude、Midjourney 等 AI 工具，思考如何用它们做出真正的产品。正在搭建自己的第一个作品集。</p>
+      <p class="spotlight-desc">系统学习 ChatGPT、Claude、Midjourney 等 AI 工具，思考如何用它们做出真正的产品，并逐步搭建自己的作品集。</p>
       <div class="spotlight-tags">
         <span class="works-tag">AI 工具</span>
         <span class="works-tag">产品设计</span>
@@ -99,35 +107,35 @@
       <div class="works-card">
         <div class="works-card-header">
           <span class="works-card-number">01</span>
-          <span class="works-card-status">进行中</span>
+          <span class="works-card-status status-active">进行中</span>
         </div>
         <h4 class="works-card-title">个人主页</h4>
-        <p class="works-card-desc">基于 Bauhaus 风格的个人网站，包含数字分身聊天功能，展示个人品牌与作品。</p>
+        <p class="works-card-desc">基于 Bauhaus 风格的个人网站，包含数字分身聊天功能，用来展示个人品牌、兴趣方向和作品探索。</p>
         <div class="works-card-tags">
           <span class="works-tag">HTML/CSS</span>
           <span class="works-tag">JavaScript</span>
         </div>
       </div>
 
-      <div class="works-card">
+      <div class="works-card works-card-placeholder">
         <div class="works-card-header">
           <span class="works-card-number">02</span>
-          <span class="works-card-status">规划中</span>
+          <span class="works-card-status status-planned">规划中</span>
         </div>
         <h4 class="works-card-title">下一个项目</h4>
-        <p class="works-card-desc">把你的想法变成产品 —— 这里将展示你的下一个作品。</p>
+        <p class="works-card-desc">把一个真正想解决的问题做成产品，这里会展示我正在酝酿的下一件作品。</p>
         <div class="works-card-tags">
           <span class="works-tag">待定</span>
         </div>
       </div>
 
-      <div class="works-card">
+      <div class="works-card works-card-placeholder">
         <div class="works-card-header">
           <span class="works-card-number">03</span>
-          <span class="works-card-status">规划中</span>
+          <span class="works-card-status status-planned">规划中</span>
         </div>
         <h4 class="works-card-title">更多作品</h4>
-        <p class="works-card-desc">持续更新中，敬请期待。</p>
+        <p class="works-card-desc">持续更新中，后面会把更多尝试和成品慢慢补进来。</p>
         <div class="works-card-tags">
           <span class="works-tag">待定</span>
         </div>

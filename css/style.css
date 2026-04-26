@@ -13,6 +13,8 @@
   --cobalt: #1D4ED8;
   --cobalt-dark: #1E3A8A;
   --cobalt-glow: rgba(29, 78, 216, 0.08);
+  --red: #D94A3D;
+  --yellow: #E8B830;
 }
 
 html {
@@ -26,6 +28,7 @@ body {
   color: #2C2C2C;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
+  padding-top: 48px;
 }
 
 body::before {
@@ -38,6 +41,64 @@ body::before {
     linear-gradient(rgba(44,44,44,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(44,44,44,0.03) 1px, transparent 1px);
   background-size: 48px 48px;
+}
+
+/* ========================================
+   NAV
+   ======================================== */
+.nav-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+  padding: 0.65rem 1.5rem;
+  background: #F5F0EB;
+  border-bottom: 1px solid rgba(44,44,44,0.08);
+  transition: box-shadow 0.3s ease;
+}
+
+.nav-bar.scrolled {
+  box-shadow: 0 2px 12px rgba(44,44,44,0.06);
+}
+
+.nav-link {
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: #B0ACA7;
+  font-weight: 500;
+  transition: color 0.25s;
+  position: relative;
+  padding-bottom: 2px;
+}
+
+.nav-link:hover {
+  color: #5A5A5A;
+}
+
+.nav-link.active {
+  color: #2C2C2C;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--cobalt);
+  transition: width 0.3s ease;
+}
+
+.nav-link.active::after {
+  width: 100%;
 }
 
 /* ========================================
@@ -78,9 +139,10 @@ body::before {
 .hero {
   display: flex;
   align-items: center;
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   border-bottom: 3px solid #2C2C2C;
   position: relative;
+  scroll-margin-top: 60px;
 }
 
 .hero::before {
@@ -88,11 +150,16 @@ body::before {
   position: absolute;
   width: 160px;
   height: 160px;
-  border: 2px solid var(--cobalt);
+  border: 2px solid var(--red);
   right: 8%;
   top: 12%;
-  opacity: 0.25;
+  opacity: 0.3;
   pointer-events: none;
+  transition: transform 0.5s ease;
+}
+
+.hero:hover::before {
+  transform: rotate(1.5deg);
 }
 
 .hero::after {
@@ -100,10 +167,10 @@ body::before {
   position: absolute;
   width: 10px;
   height: 10px;
-  background: var(--cobalt);
+  background: var(--yellow);
   right: calc(8% + 170px);
   top: calc(12% + 170px);
-  opacity: 0.4;
+  opacity: 0.5;
   pointer-events: none;
 }
 
@@ -148,6 +215,12 @@ body::before {
   display: block;
   border: 2px solid #2C2C2C;
   object-fit: cover;
+  transition: transform 0.3s ease, border-color 0.3s ease;
+}
+
+.hero-avatar img:hover {
+  transform: scale(1.03);
+  border-color: var(--red);
 }
 
 .hero-name {
@@ -195,9 +268,11 @@ body::before {
    ABOUT SECTION
    ======================================== */
 .about {
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   max-width: 960px;
   margin: 0 auto;
+  scroll-margin-top: 60px;
+  border-top: 1px solid rgba(44,44,44,0.06);
 }
 
 .about-intro {
@@ -277,9 +352,11 @@ body::before {
    WORKS SECTION
    ======================================== */
 .works {
-  padding: 2rem 1.5rem;
+  padding: 2.5rem 1.5rem;
   max-width: 960px;
   margin: 0 auto;
+  scroll-margin-top: 60px;
+  border-top: 1px solid rgba(44,44,44,0.06);
 }
 
 .works-spotlight {
@@ -340,7 +417,7 @@ body::before {
 
 .works-card {
   border: 2px solid #2C2C2C;
-  padding: 1.2rem;
+  padding: 1.5rem;
   background: #F0ECE6;
   transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
 }
@@ -349,6 +426,23 @@ body::before {
   transform: translate(-2px, -2px);
   box-shadow: 4px 4px 0 var(--cobalt);
   border-color: var(--cobalt);
+}
+
+/* placeholder cards (规划中) */
+.works-card-placeholder {
+  border-style: dashed;
+  border-color: #C8C4BF;
+  background: #F0ECE6;
+  opacity: 0.6;
+}
+.works-card-placeholder:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: #C8C4BF;
+}
+.works-card-placeholder .works-card-status {
+  border-color: #C8C4BF;
+  color: #B0ACA7;
 }
 
 .works-card-header {
@@ -374,6 +468,16 @@ body::before {
   background: #F5F0EB;
 }
 
+.works-card-status.status-active {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.works-card-status.status-planned {
+  border-color: var(--yellow);
+  color: var(--yellow);
+}
+
 .works-card-title {
   font-size: 1rem;
   font-weight: 700;
@@ -397,7 +501,7 @@ body::before {
 
 @media (min-width: 640px) {
   .works {
-    padding: 2.5rem 2rem;
+    padding: 3rem 2rem;
   }
 
   .works-spotlight {
@@ -418,19 +522,15 @@ body::before {
   }
 }
 
-@media (min-width: 960px) {
-  .works {
-    padding: 3rem 2rem;
-  }
-}
-
 /* ========================================
    CHAT SECTION
    ======================================== */
 .chat {
-  padding: 2rem 1.5rem 3rem;
+  padding: 2.5rem 1.5rem;
   max-width: 960px;
   margin: 0 auto;
+  scroll-margin-top: 60px;
+  border-top: 1px solid rgba(44,44,44,0.06);
 }
 
 .chat-container {
@@ -487,6 +587,28 @@ body::before {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+}
+
+/* ---- typing dots ---- */
+.typing-dots {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0.9rem 1rem !important;
+}
+.typing-dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #B0ACA7;
+  animation: dotPulse 1.2s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes dotPulse {
+  0%, 60%, 100% { opacity: 0.3; transform: scale(0.85); }
+  30% { opacity: 1; transform: scale(1); }
 }
 
 .chat-messages::-webkit-scrollbar {
@@ -595,6 +717,11 @@ body::before {
   font-family: inherit;
 }
 
+.chat-input-area input:focus {
+  background: #EDE9E4;
+  box-shadow: inset 0 0 0 1.5px var(--cobalt);
+}
+
 .chat-input-area input::placeholder {
   color: #B0ACA7;
 }
@@ -625,10 +752,11 @@ body::before {
    FOOTER
    ======================================== */
 .footer {
-  padding: 1.5rem;
+  padding: 2.5rem 1.5rem 3rem;
   text-align: center;
   max-width: 960px;
   margin: 0 auto;
+  border-top: 1px solid rgba(44,44,44,0.06);
 }
 
 .footer-line {
@@ -671,10 +799,17 @@ body::before {
 }
 
 @media (max-width: 639px) {
+  .nav-bar {
+    gap: 1.2rem;
+    padding: 0.6rem 1rem;
+  }
+
+  .nav-link {
+    font-size: 0.65rem;
+  }
+
   .hero::before,
-  .hero::after,
-  .hero-grid::before,
-  .hero-grid::after {
+  .hero::after {
     display: none;
   }
 }
@@ -684,7 +819,7 @@ body::before {
    ======================================== */
 @media (min-width: 640px) {
   .hero {
-    padding: 3rem 2rem 2rem;
+    padding: 3rem 2rem;
   }
 
   .hero-grid {
@@ -703,7 +838,7 @@ body::before {
   }
 
   .about {
-    padding: 2.5rem 2rem;
+    padding: 3rem 2rem;
   }
 
   .about-grid {
@@ -715,12 +850,15 @@ body::before {
     grid-column: 1 / 2;
   }
 
+  .about-card:nth-child(2) {
+    grid-column: 2 / 3;
+  }
   .about-card:nth-child(3) {
     grid-column: 1 / -1;
   }
 
   .chat {
-    padding: 2.5rem 2rem 3rem;
+    padding: 3rem 2rem;
   }
 
   .chat-messages {
@@ -733,7 +871,7 @@ body::before {
   }
 
   .footer {
-    padding: 2rem;
+    padding: 3rem 2rem;
   }
 }
 
@@ -742,7 +880,7 @@ body::before {
    ======================================== */
 @media (min-width: 960px) {
   .hero {
-    padding: 4rem 2rem 3rem;
+    padding: 4rem 2rem;
   }
 
   .hero-name {
@@ -758,25 +896,33 @@ body::before {
   }
 
   .chat {
-    padding: 3rem 2rem 4rem;
+    padding: 4rem 2rem;
   }
 }
 
 /* ========================================
    TRANSITIONS (section appearance)
    ======================================== */
-.hero,
-.about,
-.works,
-.chat {
+.hero {
   opacity: 0;
   transform: translateY(20px);
   animation: fadeUp 0.6s ease forwards;
 }
 
-.about { animation-delay: 0.15s; }
-.chat  { animation-delay: 0.25s; }
-.works { animation-delay: 0.35s; }
+.about,
+.chat,
+.works {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.about.section-visible,
+.chat.section-visible,
+.works.section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
 
 @keyframes fadeUp {
   to {
