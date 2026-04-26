@@ -103,18 +103,23 @@
       </div>
     </div>
 
+    <div class="works-toolbar">
+      <button class="works-add-btn" id="worksAddBtn">+ 从 GitHub 添加</button>
+    </div>
+
     <div class="works-grid" id="worksGrid">
-      <div class="works-card">
+      <div class="works-card" id="worksCardFirst">
         <div class="works-card-header">
           <span class="works-card-number">01</span>
           <span class="works-card-status status-active">进行中</span>
         </div>
         <h4 class="works-card-title">个人主页</h4>
-        <p class="works-card-desc">基于 Bauhaus 风格的个人网站，包含数字分身聊天功能，用来展示个人品牌、兴趣方向和作品探索。</p>
+        <p class="works-card-desc">Bauhaus 风格的个人名片站，集成数字分身 AI 聊天，展示个人品牌与作品方向。<br>从设计到实现全程由 Claude 和 Cursor 辅助完成。<br>已上线运行，持续打磨交互细节中。</p>
         <div class="works-card-tags">
           <span class="works-tag">HTML/CSS</span>
           <span class="works-tag">JavaScript</span>
         </div>
+        <button class="works-card-delete" title="删除该项目">删除</button>
       </div>
 
       <div class="works-card works-card-placeholder">
@@ -142,6 +147,23 @@
       </div>
     </div>
   </section>
+
+  <!-- ========== REPO MODAL ========== -->
+  <div class="modal-overlay" id="repoModal">
+    <div class="modal">
+      <div class="modal-header">
+        <span>从 GitHub 添加项目</span>
+        <button class="modal-close" id="modalClose">&times;</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <div class="modal-loading">加载仓库列表...</div>
+      </div>
+      <div class="modal-footer">
+        <button class="modal-btn modal-btn-cancel" id="modalCancel">取消</button>
+        <button class="modal-btn modal-btn-confirm" id="modalConfirm" disabled>添加所选</button>
+      </div>
+    </div>
+  </div>
 
   <!-- ========== FOOTER ========== -->
   <footer class="footer">

@@ -98,7 +98,7 @@ function addTypingIndicator() {
   const div = document.createElement('div');
   div.className = 'msg msg-bot';
   div.id = 'typingIndicator';
-  div.innerHTML = '<div class="msg-avatar">J</div><div class="msg-bubble" style="color:#B0ACA7;">正在输入...</div>';
+  div.innerHTML = '<div class="msg-avatar">J</div><div class="msg-bubble typing-dots"><span></span><span></span><span></span></div>';
   chatMessages.appendChild(div);
   chatMessages.scrollTop = chatMessages.scrollHeight;
 }
@@ -110,7 +110,10 @@ function removeTypingIndicator() {
 
 async function handleSend() {
   const text = chatInput.value.trim();
-  if (!text) return;
+  if (!text || chatSend.disabled) return;
+
+  chatSend.disabled = true;
+  chatSend.textContent = '发送中';
 
   addMessage(text, 'user');
   chatInput.value = '';
@@ -130,6 +133,9 @@ async function handleSend() {
     const reply = findLocalAnswer(text) || getFallback();
     addMessage(reply, 'bot');
   }
+
+  chatSend.disabled = false;
+  chatSend.textContent = '发送';
 }
 
 // ---------- ABOUT 卡片点击 ----------
@@ -239,3 +245,402 @@ const chatStatus = document.getElementById('chatStatus');
 
   update();
 })();
+
+// ---------- Works: 跳转确认 ----------
+function openRepoConfirm(url) {
+  // 创建遮罩
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.style.display = 'flex';
+
+  const box = document.createElement('div');
+  box.className = 'modal';
+  box.style.maxWidth = '380px';
+  box.innerHTML = `
+    <div class="modal-header" style="border-bottom-color:var(--cobalt);">
+      <span>跳转确认</span>
+    </div>
+    <div class="modal-body" style="padding:1.5rem 1.2rem;text-align:center;">
+      <p style="font-size:0.9rem;color:#5A5A5A;line-height:1.7;margin-bottom:0.3rem;">
+        即将跳转到 GitHub 查看项目源码
+      </p>
+      <p style="font-size:0.78rem;color:#B0ACA7;">是否继续？</p>
+    </div>
+    <div class="modal-footer" style="justify-content:center;gap:0.8rem;">
+      <button class="modal-btn modal-btn-cancel" id="confirmCancel" style="min-width:80px;">取消</button>
+      <button class="modal-btn modal-btn-confirm" id="confirmOk" style="min-width:80px;" autofocus>继续</button>
+    </div>
+  `;
+
+  overlay.appendChild(box);
+  document.body.appendChild(overlay);
+
+  const close = () => overlay.remove();
+
+  document.getElementById('confirmCancel').addEventListener('click', close);
+  document.getElementById('confirmOk').addEventListener('click', () => {
+    close();
+    window.open(url, '_blank');
+  });
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) close();
+  });
+}
+
+// ---------- Works: 首张卡片交互 ----------
+(function setupFirstCard() {
+  const card = document.getElementById('worksCardFirst');
+  if (!card) return;
+
+  // 点击跳转 GitHub 仓库
+  card.style.cursor = 'pointer';
+  card.addEventListener('click', (e) => {
+    if (e.target.closest('.works-card-delete')) return;
+    openRepoConfirm('https://github.com/jay13145678/who-is-JJJay');
+  });
+
+  // 状态切换
+  const statusEl = card.querySelector('.works-card-status');
+  const firstStatusKey = 'jjjay_first_status';
+  const savedStatus = localStorage.getItem(firstStatusKey) || '进行中';
+  const statusMap = {
+    '进行中': { cls: 'status-active', label: '进行中' },
+    '已完成': { cls: 'status-completed', label: '已完成' },
+    '规划中': { cls: 'status-planned', label: '规划中' },
+  };
+  const applyStatus = (label) => {
+    const s = statusMap[label] || statusMap['进行中'];
+    statusEl.className = `works-card-status ${s.cls}`;
+    statusEl.textContent = s.label;
+  };
+  applyStatus(savedStatus);
+  const cycle = ['进行中', '已完成', '规划中'];
+  statusEl.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const cur = statusEl.textContent;
+    const next = cycle[(cycle.indexOf(cur) + 1) % cycle.length];
+    applyStatus(next);
+    localStorage.setItem(firstStatusKey, next);
+  });
+
+  // 删除
+  const delBtn = card.querySelector('.works-card-delete');
+  if (delBtn) {
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      card.remove();
+    });
+  }
+})();
+
+// ---------- Works: GitHub 项目导入 ----------
+const GITHUB_USER = 'jay13145678';
+const STORAGE_KEY = 'jjjay_works';
+const worksGrid = document.getElementById('worksGrid');
+
+// 初始化示例数据
+(function seedWorks() {
+  const cs2 = {
+    id: 'cs-message-seed',
+    title: 'CS2 比赛日报自动化',
+    description: '用 Playwright 爬取 5eplay 赛事数据，自动筛选一线赛事和热门战队比赛结果，通过 QQ 邮箱 SMTP 推送日报。覆盖 IEM、BLAST、Major、ESL Pro League 等顶级赛事。',
+    tags: ['Node.js', 'Python', 'Playwright'],
+    url: 'https://github.com/jay13145678/CS-message',
+    status: '已完成',
+  };
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    const repos = saved ? JSON.parse(saved) : [];
+    const hasIt = repos.some(r => r.title === cs2.title || r.id === cs2.id);
+    if (!hasIt && repos.length < 5) {
+      repos.push(cs2);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(repos));
+    }
+  } catch { /* ignore */ }
+})();
+const worksAddBtn = document.getElementById('worksAddBtn');
+const repoModal = document.getElementById('repoModal');
+const modalBody = document.getElementById('modalBody');
+const modalClose = document.getElementById('modalClose');
+const modalCancel = document.getElementById('modalCancel');
+const modalConfirm = document.getElementById('modalConfirm');
+
+let selectedRepos = new Map();
+
+// 页面加载时从 localStorage 恢复
+(function loadWorksFromStorage() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved) return;
+    const repos = JSON.parse(saved);
+    if (!repos.length) return;
+    renderWorksCards(repos);
+  } catch { /* ignore */ }
+})();
+
+function saveWorksToStorage(repos) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(repos));
+}
+
+function renderWorksCards(repos) {
+  // 保留第 01 号卡片（个人主页），清除之后的所有卡片
+  while (worksGrid.children.length > 1) {
+    worksGrid.removeChild(worksGrid.lastChild);
+  }
+
+  repos.forEach((repo, i) => {
+    const num = i + 2; // 从 02 开始编号
+    const card = document.createElement('div');
+    card.className = 'works-card';
+    card.dataset.repoId = repo.id || `repo-${i}`;
+    const statusMap = {
+      '进行中': { cls: 'status-active', label: '进行中' },
+      '已完成': { cls: 'status-completed', label: '已完成' },
+      '规划中': { cls: 'status-planned', label: '规划中' },
+    };
+    const cur = statusMap[repo.status] || statusMap['已完成'];
+    card.innerHTML = `
+      <div class="works-card-header">
+        <span class="works-card-number">${String(num).padStart(2, '0')}</span>
+        <span class="works-card-status ${cur.cls}" data-status="${cur.label}">${cur.label}</span>
+      </div>
+      <h4 class="works-card-title">${escapeHtml(repo.title)}</h4>
+      <p class="works-card-desc">${escapeHtml(repo.description || '暂无描述')}</p>
+      <div class="works-card-tags">
+        ${repo.tags.map(t => `<span class="works-tag">${escapeHtml(t)}</span>`).join('')}
+      </div>
+      <button class="works-card-delete" title="删除该项目">删除</button>
+    `;
+    // 删除按钮
+    const delBtn = card.querySelector('.works-card-delete');
+    delBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const idx = saved.findIndex(r => r.id === repo.id);
+      if (idx !== -1) saved.splice(idx, 1);
+      saveWorksToStorage(saved);
+      renderWorksCards(saved);
+    });
+    // 状态切换
+    const statusEl = card.querySelector('.works-card-status');
+    const cycle = ['进行中', '已完成', '规划中'];
+    statusEl.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const curIdx = cycle.indexOf(repo.status || '已完成');
+      const next = cycle[(curIdx + 1) % cycle.length];
+      repo.status = next;
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      const match = saved.find(r => r.id === repo.id);
+      if (match) match.status = next;
+      saveWorksToStorage(saved);
+      renderWorksCards(saved);
+    });
+
+    // 点击跳转到 GitHub
+    if (repo.url) {
+      card.style.cursor = 'pointer';
+      card.addEventListener('click', (e) => {
+        if (e.target.closest('.works-card-delete')) return;
+        openRepoConfirm(repo.url);
+      });
+    }
+    worksGrid.appendChild(card);
+  });
+
+  // 补 placeholder 到至少 3 张
+  fillPlaceholders(repos.length + 1);
+}
+
+function fillPlaceholders(existingCount) {
+  const placeholders = worksGrid.querySelectorAll('.works-card-placeholder');
+  const total = existingCount + placeholders.length;
+  // 如果总数 < 3，补 placeholder
+  for (let i = total; i < 3; i++) {
+    const num = i + 1;
+    const card = document.createElement('div');
+    card.className = 'works-card works-card-placeholder';
+    card.innerHTML = `
+      <div class="works-card-header">
+        <span class="works-card-number">${String(num).padStart(2, '0')}</span>
+        <span class="works-card-status status-planned">规划中</span>
+      </div>
+      <h4 class="works-card-title">更多作品</h4>
+      <p class="works-card-desc">持续更新中，后面会把更多尝试和成品慢慢补进来。</p>
+      <div class="works-card-tags">
+        <span class="works-tag">待定</span>
+      </div>
+    `;
+    worksGrid.appendChild(card);
+  }
+}
+
+function escapeHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// ---- modal ----
+worksAddBtn.addEventListener('click', openRepoModal);
+
+modalClose.addEventListener('click', closeRepoModal);
+modalCancel.addEventListener('click', closeRepoModal);
+repoModal.addEventListener('click', (e) => {
+  if (e.target === repoModal) closeRepoModal();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && repoModal.classList.contains('open')) closeRepoModal();
+});
+
+function openRepoModal() {
+  selectedRepos.clear();
+  modalConfirm.disabled = true;
+  repoModal.classList.add('open');
+  modalBody.innerHTML = '<div class="modal-loading">加载仓库列表...</div>';
+
+  fetch(`https://api.github.com/users/${GITHUB_USER}/repos?sort=updated&per_page=50&type=owner`)
+    .then(res => {
+      if (!res.ok) throw new Error(`GitHub API ${res.status}`);
+      return res.json();
+    })
+    .then(repos => {
+      // 过滤 fork 的仓库
+      const own = repos.filter(r => !r.fork);
+      if (!own.length) {
+        modalBody.innerHTML = '<div class="modal-empty">没有找到公开仓库</div>';
+        return;
+      }
+      renderRepoList(own);
+    })
+    .catch(err => {
+      modalBody.innerHTML = `<div class="modal-error">加载失败：${err.message}</div>`;
+    });
+}
+
+function closeRepoModal() {
+  repoModal.classList.remove('open');
+  selectedRepos.clear();
+}
+
+function renderRepoList(repos) {
+  modalBody.innerHTML = '';
+  repos.forEach(repo => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'modal-repo-wrapper';
+
+    const item = document.createElement('label');
+    item.className = 'modal-repo-item';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.dataset.id = repo.id;
+
+    const info = document.createElement('div');
+    info.className = 'modal-repo-info';
+
+    const name = document.createElement('div');
+    name.className = 'modal-repo-name';
+    name.textContent = repo.name;
+
+    const desc = document.createElement('div');
+    desc.className = 'modal-repo-desc';
+    desc.textContent = repo.description || '暂无描述';
+
+    const lang = document.createElement('div');
+    if (repo.language) {
+      lang.className = 'modal-repo-lang';
+      lang.textContent = repo.language;
+    }
+
+    info.appendChild(name);
+    info.appendChild(desc);
+    if (repo.language) info.appendChild(lang);
+    item.appendChild(checkbox);
+    item.appendChild(info);
+
+    // 可编辑描述区
+    const editor = document.createElement('div');
+    editor.className = 'modal-repo-editor';
+    editor.style.display = 'none';
+    const nameLabel = document.createElement('div');
+    nameLabel.className = 'modal-repo-editor-label';
+    nameLabel.textContent = '项目名称';
+    const nameInput = document.createElement('input');
+    nameInput.className = 'modal-repo-editor-input';
+    nameInput.type = 'text';
+    nameInput.placeholder = '自定义名称...';
+    nameInput.value = repo.name;
+    const descLabel = document.createElement('div');
+    descLabel.className = 'modal-repo-editor-label';
+    descLabel.textContent = '项目介绍';
+    const descInput = document.createElement('textarea');
+    descInput.className = 'modal-repo-editor-input';
+    descInput.rows = 3;
+    descInput.placeholder = '写一段项目介绍...';
+    descInput.value = repo.description || '';
+    editor.appendChild(nameLabel);
+    editor.appendChild(nameInput);
+    editor.appendChild(descLabel);
+    editor.appendChild(descInput);
+
+    wrapper.appendChild(item);
+    wrapper.appendChild(editor);
+    modalBody.appendChild(wrapper);
+
+    item.addEventListener('click', (e) => {
+      if (e.target === checkbox) return;
+      checkbox.checked = !checkbox.checked;
+      checkbox.dispatchEvent(new Event('change'));
+    });
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        selectedRepos.set(repo.id, {
+          title: nameInput.value.trim() || repo.name,
+          description: descInput.value.trim() || repo.description || '暂无描述',
+          tags: repo.language ? [repo.language] : [],
+          url: repo.html_url,
+        });
+        editor.style.display = 'block';
+        nameInput.focus();
+        nameInput.setSelectionRange(nameInput.value.length, nameInput.value.length);
+      } else {
+        selectedRepos.delete(repo.id);
+        editor.style.display = 'none';
+      }
+      modalConfirm.disabled = selectedRepos.size === 0;
+    });
+
+    // 实时更新名称和描述
+    nameInput.addEventListener('input', () => {
+      if (selectedRepos.has(repo.id)) {
+        const data = selectedRepos.get(repo.id);
+        data.title = nameInput.value.trim() || repo.name;
+      }
+    });
+    descInput.addEventListener('input', () => {
+      if (selectedRepos.has(repo.id)) {
+        const data = selectedRepos.get(repo.id);
+        data.description = descInput.value.trim() || repo.description || '暂无描述';
+      }
+    });
+  });
+}
+
+modalConfirm.addEventListener('click', () => {
+  const repos = Array.from(selectedRepos.values());
+  if (!repos.length) return;
+
+  // 合并已有 + 新增
+  let existing = [];
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) existing = JSON.parse(saved);
+  } catch { /* ignore */ }
+
+  const merged = [...existing, ...repos];
+  saveWorksToStorage(merged);
+  renderWorksCards(merged);
+  closeRepoModal();
+});
