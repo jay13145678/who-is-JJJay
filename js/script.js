@@ -672,6 +672,7 @@ function renderRepoList(repos) {
     checkbox.addEventListener('change', () => {
       if (checkbox.checked) {
         selectedRepos.set(repo.id, {
+          id: repo.id,
           title: nameInput.value.trim() || repo.name,
           description: descInput.value.trim() || repo.description || '暂无描述',
           tags: repo.language ? [repo.language] : [],
